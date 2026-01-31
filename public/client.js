@@ -203,22 +203,50 @@ if (clearOutputBtn) {
  * Real-time output from Socket.io for collaborative code execution
  * When any user in the room runs code, all users see the output
  */
-socket.on('code-output', ({ output, error, username, language }) => {
-    // Display who ran the code
-    const message = `${username} ran code (${language}):`;
-    console.log(message);
-
-    // Clear previous output and show new output
+socket.on("code-output", ({
+    status,
+    output,
+    errorType,
+    username,
+    language
+}) => {
+    console.log("Code output received:", status, errorType);
     clearOutput();
 
-    if (output) {
-        displayOutput(output, 'success');
-        showNotification('Code Output', `${username} ran ${language} code`, 'info');
-    } else if (error) {
-        displayOutput(error, 'error');
-        showNotification('Execution Error', `${username}'s code failed`, 'error');
+    
+    if (status === "success") {
+        displayOutput(output, "success");
+        showNotification(
+            "Code Output",
+            `${username} ran ${language} code`,
+            "info"
+        );
+        return;
     }
+
+    // ❌ Error handling
+    let title = "Execution Error";
+
+    switch (errorType) {
+        case "COMPILATION_ERROR":
+            title = "Compilation Error";
+            break;
+        case "RUNTIME_ERROR":
+            title = "Runtime Error";
+            break;
+        case "TIMEOUT_ERROR":
+            title = "Time Limit Exceeded";
+            break;
+        case "SEGMENTATION_FAULT":
+            title = "Segmentation Fault";
+            break;
+    }
+
+    displayOutput(output, "error");
+    showNotification(title, `${username}'s code failed`, "error");
 });
+
+
 
 /* ============================================
    UI Helper Functions (Defined First)
@@ -527,7 +555,7 @@ socket.on('code-change', ({ code }) => {
 
 // Handle user disconnection
 socket.on('user-disconnected', ({ socketID, username }) => {
-    showNotification('Member Left', `${username} left the room`, 'warning');
+    showNotification('User Left', `${username} disconnected from the room`, 'warning');
 });
 
 // Handle updated members list after someone disconnects

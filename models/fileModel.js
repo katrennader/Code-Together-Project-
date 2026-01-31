@@ -28,9 +28,14 @@ const fileSchema = new mongoose.Schema({
         type :String, 
         default :"running",
         enum :["success" , "running", "error"]
-       }
+       },
+        errorType :{  
+        type : String,
+        enum :["COMPILATION_ERROR" , "RUNTIME_ERROR" , "TIMEOUT_ERROR" , "SEGMENTATION_FAULT" ],
+        default : null
+       },
+    }, { timestamps: true, toJSON: { getters: true, virtuals: false }, toObject: { getters: true } });
 
-})
 
 
 const fileModel = mongoose.model("fileModel", fileSchema)
