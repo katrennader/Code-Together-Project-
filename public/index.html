@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Code Collaboration - Real-time Code Editor</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </head>
+    <body>
+        <!-- Join Room Modal -->
+        <div id="joinModal" class="modal active">
+            <div class="modal-content">
+                <h1 class="modal-title">
+                    <i class="fas fa-code-branch"></i> Code Together
+                </h1>
+                <p class="modal-subtitle">Join the crew: collaborate, compile, and run code together in real time.</p>
+
+                <form id="joinForm" class="form">
+                    <div class="form-group">
+                        <label for="username">Your Name</label>
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Enter your username"
+                            required
+                            class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="roomID">Room ID</label>
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="roomID"
+                                placeholder="Enter room ID (e.g., room-123)"
+                                required
+                                class="form-input">
+                            <button type="button" id="createRoomBtn"
+                                class="btn btn-secondary btn-sm">
+                                <i class="fas fa-plus"></i> Create
+                            </button>
+                            <button type="button" id="resetRoomBtn"
+                                class="btn btn-secondary btn-sm hidden">
+                                <i class="fas fa-redo"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Join Room
+                    </button>
+                </form>
+
+                <!-- Error Message Box -->
+                <div id="roomErrorBox" class="error-box hidden">
+                    <div class="error-box-content">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <strong id="errorTitle">Room Already
+                                Exists!</strong>
+                            <p id="errorMessage">This room already exists. Click
+                                "Join Room" button to enter it.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Tip:</strong> Share the Room ID with your
+                        teammates to collaborate together!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Editor View -->
+        <div id="editorView" class="editor-view hidden">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="app-title">
+                        <i class="fas fa-code-branch"></i> Code Collaboration
+                    </h1>
+                </div>
+
+                <div class="header-center">
+                    <div class="room-info">
+                        <span class="room-label">Room:</span>
+                        <span id="roomDisplay" class="room-id">--</span>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <button id="leaveBtn" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Leave Room
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <div class="container">
+                <!-- Code Editor Section -->
+                <div class="editor-section">
+                    <div class="editor-header">
+                        <div class="editor-header-top">
+                            <h2>
+                                <i class="fas fa-keyboard"></i> Code Editor
+                            </h2>
+                            <div class="controls-group">
+                                <div class="language-selector">
+                                    <label
+                                        for="languageSelect">Language:</label>
+                                    <select id="languageSelect"
+                                        class="language-select">
+                                        <option
+                                            value="nodejs">Node.js</option>
+                                        <option value="python">Python</option>
+                                        <option value="cpp">C++</option>
+                                    </select>
+                                </div>
+                                <button id="runCodeBtn"
+                                    class="btn btn-success btn-run">
+                                    <i class="fas fa-play"></i> Run Code
+                                </button>
+                            </div>
+                        </div>
+                        <div id="typingIndicator"
+                            class="typing-indicator hidden">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span id="typingText" class="typing-text">Someone is
+                                typing...</span>
+                        </div>
+                    </div>
+                    <textarea
+                        id="codeEditor"
+                        class="code-editor"
+                        placeholder="// Start typing your code here..."
+                        spellcheck="false"></textarea>
+
+                    <!-- Output Panel -->
+                    <div id="outputPanel" class="output-panel">
+                        <div class="output-header">
+                            <h3><i class="fas fa-terminal"></i> Output</h3>
+                            <button id="clearOutputBtn"
+                                class="btn btn-sm btn-secondary"
+                                title="Clear output">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                        <div id="outputContent" class="output-content">
+                            <p class="output-placeholder">Run your code to see
+                                the output here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Members Section -->
+                <aside class="sidebar">
+                    <div class="sidebar-section">
+                        <div class="members-header">
+                            <h3 class="sidebar-title">
+                                <i class="fas fa-users"></i> Active Members
+                            </h3>
+                            <span id="memberCount"
+                                class="member-count-badge">0</span>
+                        </div>
+                        <div id="membersList" class="members-list">
+                            <p class="empty-state">Loading members...</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-info-circle"></i> Info
+                        </h3>
+                        <div class="info-panel">
+                            <p><strong>Status:</strong> <span
+                                    id="connectionStatus"
+                                    class="status-badge status-connected">Connected</span></p>
+                            <p id="currentUser"><strong>You:</strong> User</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- Notification Container -->
+            <div id="notificationContainer"
+                class="notification-container"></div>
+        </div>
+
+        <!-- Socket.IO Library -->
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+        <!-- Client Script -->
+        <script src="client.js"></script>
+    </body>
+</html>
