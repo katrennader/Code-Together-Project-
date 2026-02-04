@@ -5,6 +5,7 @@ console.log("🔵 Initializing Code Queue...");
 const codeQueue = new Queue("code-queue", {
   redis: {
     url: process.env.REDIS_URL,
+    tls: {},
     connectTimeout: 3000,
     maxRetriesPerRequest: null,
   },
