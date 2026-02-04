@@ -21,7 +21,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-     "worker": "node worker.js" 
+     "worker": "node workers.js/codeExecution.js"
   },
   "keywords": [],
   "author": "",
