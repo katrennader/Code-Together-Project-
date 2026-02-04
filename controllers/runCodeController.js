@@ -3,7 +3,6 @@ const { generateFile } = require("./generateFile");
 const File = require("../models/fileModel");
 const addCodeToQueue = require("../queues/addCodeTOQueue");
 
-// Controller for queue-based execution
 const runCodeController = async (req, res) => {
   console.log("🔥 runCodeController HIT");
   const { language, code, roomID, username } = req.body;
@@ -17,10 +16,8 @@ const runCodeController = async (req, res) => {
   
   try {
 
-    // 1️⃣ Generate code file
     const filePath = await generateFile(language, code);
 
-    // 2️⃣ Save initial file document in DB
     const file = await File.create({
       language,
       filePath,
@@ -29,7 +26,6 @@ const runCodeController = async (req, res) => {
       roomID,
     });
 
-    // 3️⃣ Add job to queue
     console.log("🧪 Adding job to queue...");
     await addCodeToQueue({
       fileId: file._id,

@@ -6,17 +6,16 @@
 */
 const fs = require("fs")
 const path = require("path")
-const { v4: uuidv4 } = require("uuid") // get version 4 from uuid => used to generate unique id for each file as file name 
+const { v4: uuidv4 } = require("uuid")
 
-const dircodes = path.join(__dirname, "codes") // take file and put in codes folder 
+const dircodes = path.join(__dirname, "codes")
 
 // check if folder not exist create it 
 if (!fs.existsSync(dircodes)) fs.mkdirSync(dircodes, { recursive: true })
 
-// generate file (create file name connect with dircodes to get file path , add code inside filepath)
-const generateFile = async (language, code) => {   // format = extension 
-  fileId = uuidv4();    // the first part of file name and the second is format == ID.format(extension) 
-  const fileName = `${fileId}.${language}`  // create file name an now combine file name + dircodes to get file path
+const generateFile = async (language, code) => {    
+  fileId = uuidv4();  
+  const fileName = `${fileId}.${language}`  
   const filePath = path.join(dircodes, fileName)
   
   fs.writeFileSync(filePath, code)

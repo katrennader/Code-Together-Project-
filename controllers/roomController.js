@@ -14,7 +14,6 @@ const createRoom = async (req, res) => {
                 .json({ success: "fail", message: "please enter roomId" })
         }
 
-        // check if roomId is already exists
         const existingRoom = await Room.findOne({ roomId })
         if (existingRoom) {
             console.log('Room creation failed: Room already exists -', roomId);
@@ -23,7 +22,6 @@ const createRoom = async (req, res) => {
                 .json({ message: `This room with ID ${roomId} was already created by: ${username} ` })
         }
 
-        // create new room 
         const newRoom = await Room.create({ roomId })
         console.log('Room created successfully:', roomId);
 

@@ -1,18 +1,24 @@
 const { exec } = require("child_process");
+const fs = require("fs")
+const path = require("path")
+
+const outputDir = path.join(__dirname, "outputs")
+
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true })
+}
 
 const executeNodeJs = (filePath) => {
   return new Promise((resolve, reject) => {
     exec(`node ${filePath}`, (error, stdout, stderr) => {
       if (error) {
         console.log("Node Execution - error: ", error);
-        // ALWAYS reject on non-zero exit code
         return reject({
           stderr: stderr || error.message,
           message: error.message
         });
       }
 
-      // If process exited successfully, resolve stdout
       resolve(stdout || "");
     });
   });
