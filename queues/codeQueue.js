@@ -1,7 +1,6 @@
 const Queue = require("bull");
 require("dotenv").config();
 console.log("🔵 Initializing Code Queue...");
-console.log("🔵 Using Redis URL:", process.env.REDIS_URL);
 
 const codeQueue = new Queue("code-queue", {
   redis: {

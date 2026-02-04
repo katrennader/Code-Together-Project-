@@ -44,8 +44,6 @@ const startServer = async () => {
         // Initialize code worker for queue processing
         const codeWorker = require("./workers.js/codeExecution");
         codeWorker(io);
-        console.log("✅ Code Worker initialized");
-
         myServer.listen(Port, () => {
             console.log(`Server is running at port ${Port}`);
         });

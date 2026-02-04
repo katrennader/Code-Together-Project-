@@ -10,7 +10,6 @@ module.exports = (io) => {
   console.log("🟢 Code Worker is running...");
 
   codeQueue.process("execute-code", async (job) => {
-    console.log("🟢 Executing code...");
     const { fileId, language, filePath, roomID, username} = job.data;
 
     let output = "";
@@ -35,9 +34,7 @@ module.exports = (io) => {
 
       console.log("🟢 Emitting output to frontend...");
       io.to(roomID).emit("code-output", { status: "success", output,errorType: null, username, language });
-      console.log("roomID:", roomID);
-      console.log("Output emitted:", output);
-      console.log("🟢 Code execution completed successfully.");
+            console.log("🟢 Code execution completed successfully.");
 
       return output;
     } catch (err) {
