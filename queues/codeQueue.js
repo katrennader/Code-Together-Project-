@@ -6,7 +6,7 @@ const codeQueue = new Queue("code-queue", {
   redis: {
     url: process.env.REDIS_URL,
     connectTimeout: 3000,
-    maxRetriesPerRequest: 1,
+    maxRetriesPerRequest: null,
   },
   defaultJobOptions: {
     attempts: 1,
