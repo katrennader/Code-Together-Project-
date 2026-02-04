@@ -8,7 +8,6 @@ module.exports = (io) => {
   const executeNodeJs = require("../controllers/executeNodeJs");
 
   console.log("🟢 Code Worker is running...");
-
   codeQueue.process("execute-code", async (job) => {
     const { fileId, language, filePath, roomID, username} = job.data;
 
