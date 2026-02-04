@@ -1,4 +1,4 @@
-# CodeTogether
+# CodeCollaboration
 
 Code Together is a collaborative code execution platform supporting multiple programming languages (Python, C++, Node.js) with real-time features. Users can write, share, and execute code in rooms, view outputs, and collaborate instantly.
 
@@ -39,7 +39,7 @@ Start the server:
 ```bash
 npm start
 ```
-The server runs on `http://localhost:3000` by default.
+The server runs on `http://localhost:5000` by default.
 
 ### Using the System
 1. Open `public/index.html` in your browser.
