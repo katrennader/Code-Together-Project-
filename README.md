@@ -1,4 +1,4 @@
-# CodeCollaboration
+# CodeTogether
 
 Code Together is a collaborative code execution platform supporting multiple programming languages (Python, C++, Node.js) with real-time features. Users can write, share, and execute code in rooms, view outputs, and collaborate instantly.
 
