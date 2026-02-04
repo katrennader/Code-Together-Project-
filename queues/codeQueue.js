@@ -1,15 +1,21 @@
-          //  connect bull with redis 
-require("dotenv").config();
-
 const Queue = require("bull");
-const Redis = require("ioredis");
+require("dotenv").config();
+console.log("🔵 Initializing Code Queue...");
+console.log("🔵 Using Redis URL:", process.env.REDIS_URL);
 
 const codeQueue = new Queue("code-queue", {
   redis: {
-    host: process.env.REDIS_HOST 
-    , port: process.env.REDIS_PORT
+    url: process.env.REDIS_URL,
+    connectTimeout: 3000,
+    maxRetriesPerRequest: 1,
+  },
+  defaultJobOptions: {
+    attempts: 1,
+    removeOnComplete: true,
+    removeOnFail: true
   }
 });
+
+console.log("🟢 Code Queue initialized...");
+
 module.exports = codeQueue;
-
-

@@ -29,7 +29,6 @@ const runCodeBtn = document.getElementById('runCodeBtn');
 const outputPanel = document.getElementById('outputPanel');
 const outputContent = document.getElementById('outputContent');
 const clearOutputBtn = document.getElementById('clearOutputBtn');
-
 // State Management
 let currentRoom = null;
 let currentUsername = null;
@@ -117,8 +116,10 @@ async function runCode() {
     displayOutput('Running your code...', 'normal');
     setRunButtonState(true);
 
+    let shouldReEnableButton = true;
+
     try {
-        // Step 2: Send POST request to backend with code, language, and roomId
+        // Step 2: Send POST request to backend with code, language, and roomID
         const response = await fetch('/api/v1/runCode', {
             method: 'POST',
             headers: {
@@ -127,7 +128,7 @@ async function runCode() {
             body: JSON.stringify({
                 code: code,
                 language: currentLanguage,
-                roomId: currentRoom,
+                roomID: currentRoom,
                 username: currentUsername,
             }),
         });
@@ -150,6 +151,7 @@ async function runCode() {
             displayOutput(data.output, 'success');
             showNotification('Success', 'Code executed successfully', 'success');
             setRunButtonState(false);
+            shouldReEnableButton = false;
             return;
         }
 
@@ -157,6 +159,7 @@ async function runCode() {
         if (data.status === 'queued') {
             displayOutput('Code queued... waiting for execution...', 'normal');
             // Don't set button state yet - wait for Socket.io event
+            shouldReEnableButton = true;
             return;
         }
 
@@ -165,17 +168,26 @@ async function runCode() {
             displayOutput(data.error, 'error');
             showNotification('Execution Error', 'Code execution failed', 'error');
             setRunButtonState(false);
+            shouldReEnableButton = false;
             return;
         }
 
         // Handle unexpected response format
         displayOutput(JSON.stringify(data), 'normal');
         setRunButtonState(false);
+        shouldReEnableButton = false;
         displayOutput(`Error: ${error.message}`, 'error');
         showNotification('Error', 'Failed to run code: ' + error.message, 'error');
-    } finally {
-        // Step 7: Re-enable the Run button
+    } catch (error) {
+        displayOutput(`Error: ${error.message}`, 'error');
+        showNotification('Error', 'Failed to run code: ' + error.message, 'error');
         setRunButtonState(false);
+        shouldReEnableButton = false;
+    } finally {
+        // Step 7: Re-enable the Run button only if not queued
+        if (shouldReEnableButton) {
+            setRunButtonState(false);
+        }
     }
 }
 
@@ -210,10 +222,13 @@ socket.on("code-output", ({
     username,
     language
 }) => {
-    console.log("Code output received:", status, errorType);
+    console.log("🔥 Code output event received from server:", { status, output, errorType, username, language });
+    console.log("Current room:", currentRoom, "Current username:", currentUsername);
     clearOutput();
 
-    
+    // Re-enable the Run button when output is received
+
+
     if (status === "success") {
         displayOutput(output, "success");
         showNotification(
@@ -445,6 +460,7 @@ if (createRoomBtn) {
                 console.log('✅ Room created, auto-joining...');
                 showNotification('Success', `✅ Room "${roomID}" created successfully!`, 'success');
 
+
                 // Hide error box on success
                 if (roomErrorBox) {
                     roomErrorBox.classList.add('hidden');
@@ -588,6 +604,17 @@ socket.on('language-change', (username, language) => {
     if (languageSelect) {
         languageSelect.value = language;
         currentLanguage = language;
+        codeEditor.focus();
+
+        if (language === 'python') {
+            codeEditor.value = "# Write your Python code here\nprint('Hello, World!')\n";
+        }
+        else if (language === 'cpp') {
+            codeEditor.value = '// Write your C++ code here\n#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}\n';
+        }
+        else if (language === 'nodejs') {
+            codeEditor.value = '// Write your Node.js code here\nconsole.log("Hello, World!");\n';
+        }
     }
 
     showNotification('Language Changed', `${username} changed language to ${language}`, 'info');

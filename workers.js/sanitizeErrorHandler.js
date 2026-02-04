@@ -1,43 +1,44 @@
 const sanitizeError = (error, language) => {
-    let msg = "Unknown Error";
+  let msg = "Unknown Error";
 
-    // 1️⃣ normalize input
-    if (typeof error === "string") {
-        msg = error;
-    } else if (error?.stderr) {
-        msg = error.stderr.toString();
-    } else if (error?.message) {
-        msg = error.message;
-    }
+  // 1️⃣ Normalize input
+  if (typeof error === "string") {
+    msg = error;
+  } else if (error?.stderr) {
+    msg = error.stderr.toString();
+  } else if (error?.message) {
+    msg = error.message;
+  }
 
-    const lines = msg
-        .split("\n")
-        .map(l => l.trim())
-        .filter(Boolean);
+  // 2️⃣ Split into non-empty trimmed lines
+  const lines = msg
+    .split("\n")
+    .map(l => l.trim())
+    .filter(Boolean);
 
-    // 2️⃣ C++
-    if (language === "cpp") {
-        const err = lines.find(l => l.toLowerCase().includes("error:"));
-        return err || lines[0] || "Unknown Error";
-    }
+  // 3️⃣ Language-specific extraction
 
-    // 3️⃣ Python
-    if (language === "python") {
-        const err = lines.find(l =>
-            l.includes("Error:")
-        );
-        return err || lines[lines.length - 1] || "Unknown Error";
-    }
+  if (language === "cpp") {
+    // C++: pick line with "error:" or first line
+    const errLine = lines.find(l => l.toLowerCase().includes("error:"));
+    return errLine || lines[0] || "Compilation Error";
+  }
 
-    // 4️⃣ Node.js
-    if (language === "nodejs") {
-        const err = lines.find(l =>
-            l.endsWith("Error") || l.includes("Error:")
-        );
-        return err || lines[lines.length - 1] || "Unknown Error";
-    }
+  if (language === "python") {
+    // Python: usually last line is user-friendly error
+    return lines[lines.length - 1] || "Runtime Error";
+  }
 
-    return lines[0] || "Unknown Error";
+  if (language === "nodejs") {
+    // Node.js: look for SyntaxError, ReferenceError, TypeError, etc.
+    const nodeError = lines.find(l =>
+      l.match(/(SyntaxError|ReferenceError|TypeError|Error)/)
+    );
+    return nodeError || lines[0] || "Runtime Error";
+  }
+
+  // fallback
+  return lines[0] || "Unknown Error";
 };
 
 module.exports = sanitizeError;

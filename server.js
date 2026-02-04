@@ -1,4 +1,14 @@
 require('dotenv').config();
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (reason) => {
+    console.error("Unhandled Rejection:", reason);
+});
+
+
+
 const express = require("express")
 const app = express()
 const http = require("http")
@@ -24,6 +34,8 @@ socketHandler(io)
 // Mount code router with io instance
 const codeRouter = createCodeRouter(io);
 app.use("/api/v1", codeRouter);
+
+
 
 const startServer = async () => {
     try {

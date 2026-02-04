@@ -26,9 +26,13 @@ const fileSchema = new mongoose.Schema({
        },
        status :{
         type :String, 
-        default :"running",
-        enum :["success" , "running", "error"]
+        default :"queued",
+        enum :["success" , "queued" , "error"]
        },
+        roomID :{
+        type :String, 
+        required : true
+        },
         errorType :{  
         type : String,
         enum :["COMPILATION_ERROR" , "RUNTIME_ERROR" , "TIMEOUT_ERROR" , "SEGMENTATION_FAULT" ],
