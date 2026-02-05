@@ -2,7 +2,8 @@
 FROM node:20-bullseye
 
 # Install Python & g++ for Python and C++ code execution
-RUN apt-get update && apt-get install -y python3 python3-pip g++ && apt-get clean
+RUN apt-get update && apt-get install -y python3 python3-pip g++ && apt-get clean \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 # Set working directory
 WORKDIR /app
