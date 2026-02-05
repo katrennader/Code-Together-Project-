@@ -1,6 +1,9 @@
 const codeQueue = require("./codeQueue");
 const addCodeToQueue = async ({ fileId, language, filePath, roomID, username }) => {
+       
     try {
+        console.log("🔄 Adding job to queue:", fileId);
+        await codeQueue.isReady();
         await codeQueue.add("execute-code", {
             fileId,
             language,

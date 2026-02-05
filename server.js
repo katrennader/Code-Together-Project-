@@ -40,7 +40,7 @@ const startServer = async () => {
         await connectDB();
 
         // Initialize code worker for queue processing
-        const codeWorker = require("./workers.js/codeExecution");
+        const codeWorker = require("./workers/codeExecution");
         codeWorker(io);
         myServer.listen(Port, () => {
             console.log(`Server is running at port ${Port}`);

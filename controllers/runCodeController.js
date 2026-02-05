@@ -15,9 +15,10 @@ const runCodeController = async (req, res) => {
   }
   
   try {
-
+   console.log("🧪 Generating file for code execution...");
     const filePath = await generateFile(language, code);
 
+    console.log("🧪 Creating file in database...");
     const file = await File.create({
       language,
       filePath,
