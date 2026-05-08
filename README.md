@@ -1,5 +1,8 @@
 # CodeTogether
 
+# Live Demo 
+https://drive.google.com/file/d/1Jd-SY2r4yK19YOeV6QRsyaPvoBc94d3s/view?usp=sharing
+
 Code Together is a collaborative code execution platform supporting multiple programming languages (Python, C++, Node.js) with real-time features. Users can write, share, and execute code in rooms, view outputs, and collaborate instantly.
 
 ## Features
@@ -91,8 +94,7 @@ The server runs on `http://localhost:5000` by default.
 - Check `npm start` and `docker-compose up` logs for errors.
 - Verify all dependencies are installed.
 
-### Contributing
-Pull requests are welcome. For major changes, open an issue first to discuss what you would like to change.
 
 ### License
 MIT
+
